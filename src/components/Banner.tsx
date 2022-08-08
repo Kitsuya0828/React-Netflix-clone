@@ -16,7 +16,7 @@ export const Banner = () => {
   useEffect(() => {
     async function fetchData() {
       const movie = mylist.banner;
-      const request = await axios.get(`/movie/${movie.id}?api_key=4e8834d2b0c32a4fc626c0a80ad37214`);
+      const request = await axios.get(`/movie/${movie.id}?api_key=${process.env.API_KEY}`);
       setMovie(request.data);
       return request;
     }
