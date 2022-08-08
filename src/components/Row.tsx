@@ -44,7 +44,7 @@ export const Row = ({title, isLargeRow}: Props) => {
             const movieList: Movie[] = [];
             const movies = mylist.marvel;
             for (let movie of movies) {
-                const request = await axios.get(`/movie/${movie.id}?api_key=${process.env.API_KEY}`);
+                const request = await axios.get(`/movie/${movie.id}?api_key=${process.env.REACT_APP_API_KEY}`);
                 const data = await request.data;
                 data.stars = movie.stars;
                 movieList.push(data);
@@ -76,10 +76,10 @@ export const Row = ({title, isLargeRow}: Props) => {
 
 
     const handleClick = async (movie: Movie) => {
-        let urlRequest = await axios.get(`/movie/${movie.id}/videos?api_key=${process.env.API_KEY}`);
+        let urlRequest = await axios.get(`/movie/${movie.id}/videos?api_key=${process.env.REACT_APP_API_KEY}`);
         const url = urlRequest.data.results[0]?.key;
 
-        let requestJapanese = await axios.get(`/movie/${movie.id}?api_key=${process.env.API_KEY}&language=ja`);
+        let requestJapanese = await axios.get(`/movie/${movie.id}?api_key=${process.env.REACT_APP_API_KEY}&language=ja`);
         setOverview(requestJapanese.data.overview);
 
         if (urlRequest) {
