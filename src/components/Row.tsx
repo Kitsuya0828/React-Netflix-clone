@@ -10,16 +10,19 @@ const base_url = "https://image.tmdb.org/t/p/original";
 type Props = {
     title: string;
     isLargeRow?: boolean;
+    genre?: string;
+    media?: string;
 };
 
 type Movie = {
     id: string;
     name: string;
-    title: string;
+    title: string | null;
     original_name: string;
     poster_path: string;
     backdrop_path: string;
     stars: number | null;
+    impression: string | null;
 };
 
 // trailerのoption
@@ -31,29 +34,33 @@ type Options = {
     };
 };
 
-export const Row = ({title, isLargeRow}: Props) => {
+export const Row = ({title, isLargeRow, genre, media}: Props) => {
     const [movies, setMovies] = useState<Movie[]>([]);
     const [trailerUrl, setTrailerUrl] = useState<string | null>("");
     const [trailerTitle, setTrailerTitle] = useState<string | null>("");
     const [overview, setOverview] = useState<string | null>("");
     const [stars, setStars] = useState<number | null>();
+    const [impression, setImpression] = useState<string | null>();
     const [width, height] = useWindowSize();
 
     useEffect(() => {
         async function fetchData() {
             const movieList: Movie[] = [];
-            const movies = mylist.marvel;
+            const movies = mylist.videos;
+            
             for (let movie of movies) {
-                const request = await axios.get(`/movie/${movie.id}?api_key=${process.env.REACT_APP_API_KEY}`);
+                if (genre !== movie.genre) {continue;}
+                const request = await axios.get(`/${media}/${movie.id}?api_key=${process.env.REACT_APP_API_KEY}&language=${media==="movie"? "en" : "ja"}`);
                 const data = await request.data;
                 data.stars = movie.stars;
+                data.impression = movie.impression;
                 movieList.push(data);
             }
             setMovies(movieList);
             return movieList;
         }
         fetchData();
-    }, []);
+    }, [genre, media]);
 
 
     const opts1: Options = {    
@@ -73,20 +80,19 @@ export const Row = ({title, isLargeRow}: Props) => {
     };
 
 
-
-
     const handleClick = async (movie: Movie) => {
-        let urlRequest = await axios.get(`/movie/${movie.id}/videos?api_key=${process.env.REACT_APP_API_KEY}`);
+        let urlRequest = await axios.get(`/${media}/${movie.id}/videos?api_key=${process.env.REACT_APP_API_KEY}&language=ja`);
         const url = urlRequest.data.results[0]?.key;
 
-        let requestJapanese = await axios.get(`/movie/${movie.id}?api_key=${process.env.REACT_APP_API_KEY}&language=ja`);
+        let requestJapanese = await axios.get(`/${media}/${movie.id}?api_key=${process.env.REACT_APP_API_KEY}&language=ja`);
         setOverview(requestJapanese.data.overview);
 
         if (urlRequest) {
             if (trailerUrl !== url) {
                 setTrailerUrl(url);
-                setTrailerTitle(movie.title);
+                setTrailerTitle(movie?.title || movie?.name);
                 setStars(movie.stars);
+                setImpression(movie.impression);
             } 
         } else {
             setTrailerUrl("");
@@ -110,7 +116,7 @@ export const Row = ({title, isLargeRow}: Props) => {
                     src={`${base_url}${
                         isLargeRow ? movie.poster_path : movie.backdrop_path
                     }`}
-                    alt={movie.title}
+                    alt={movie?.title || movie?.name}
                     onClick={() => handleClick(movie)}
                     />
                 ))}
@@ -123,6 +129,7 @@ export const Row = ({title, isLargeRow}: Props) => {
                             <div className="flexbox">
                                 <h2>{trailerTitle}</h2>
                                 <p>おすすめ度：<span className="star5_rating" data-rate={stars}></span></p>
+                                <p className="impression">{impression}</p>
                                 <YouTube videoId={trailerUrl} opts={
                                     (width <= 640)? opts1 : opts2
                                     } />
