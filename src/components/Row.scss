@@ -1,39 +1,39 @@
 .Row {
   padding: auto;
-    margin-left: 20px;
-    color: #fff;
-  
-    &-posters {
-      display: flex;
-      overflow-y: hidden;
-      overflow-x: scroll;
-      padding: 20px;
+  margin-left: 20px;
+  color: #fff;
 
-  
-      // &::-webkit-scrollbar {
-      //   display: none;
-      // }
-    }
-  
-    &-poster {
-      object-fit: contain;
-      width: 100%;
-      max-height: 100px;
-      margin: 10px;
-      transition: transform 450ms;
-  
-      &-large {
-        max-height: 250px;
-  
-        &:hover {
-          transform: scale(1.09);
-        }
-      }
-  
+  &-posters {
+    display: flex;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    padding: 20px;
+
+
+    // &::-webkit-scrollbar {
+    //   display: none;
+    // }
+  }
+
+  &-poster {
+    object-fit: contain;
+    width: 100%;
+    max-height: 100px;
+    margin: 10px;
+    transition: transform 450ms;
+
+    &-large {
+      max-height: 250px;
+
       &:hover {
-        transform: scale(1.08);
+        transform: scale(1.09);
       }
     }
+
+    &:hover {
+      transform: scale(1.08);
+    }
+  }
 }
 
 #overlay {
@@ -65,23 +65,29 @@
     }
 
   }
-  @media screen and (min-width:480px) { 
+
+  @media screen and (min-width:480px) {
+
     /*　画面サイズが480pxからはここを読み込む　*/
     .flexbox {
       width: 100%;
     }
   }
-  @media screen and (min-width:768px) and ( max-width:1024px) {
-      /*　画面サイズが768pxから1024pxまではここを読み込む　*/
-      .flexbox {
-        width: 85%;
-      }
+
+  @media screen and (min-width:768px) and (max-width:1024px) {
+
+    /*　画面サイズが768pxから1024pxまではここを読み込む　*/
+    .flexbox {
+      width: 85%;
+    }
   }
+
   @media screen and (min-width:1024px) {
-      /*　画面サイズが1024pxからはここを読み込む　*/
-      .flexbox {
-        width: 65%;
-      }
+
+    /*　画面サイズが1024pxからはここを読み込む　*/
+    .flexbox {
+      width: 65%;
+    }
   }
 
   #center {

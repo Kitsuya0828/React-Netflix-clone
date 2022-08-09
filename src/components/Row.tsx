@@ -30,11 +30,11 @@ type Options = {
     height: string;
     width: string;
     playerVars: {
-      autoplay: 0 | 1 | undefined;
+        autoplay: 0 | 1 | undefined;
     };
 };
 
-export const Row = ({title, isLargeRow, genre, media}: Props) => {
+export const Row = ({ title, isLargeRow, genre, media }: Props) => {
     const [movies, setMovies] = useState<Movie[]>([]);
     const [trailerUrl, setTrailerUrl] = useState<string | null>("");
     const [trailerTitle, setTrailerTitle] = useState<string | null>("");
@@ -47,10 +47,10 @@ export const Row = ({title, isLargeRow, genre, media}: Props) => {
         async function fetchData() {
             const movieList: Movie[] = [];
             const movies = mylist.videos;
-            
+
             for (let movie of movies) {
-                if (genre !== movie.genre) {continue;}
-                const request = await axios.get(`/${media}/${movie.id}?api_key=${process.env.REACT_APP_API_KEY}&language=${media==="movie"? "en" : "ja"}`);
+                if (genre !== movie.genre) { continue; }
+                const request = await axios.get(`/${media}/${movie.id}?api_key=${process.env.REACT_APP_API_KEY}&language=${media === "movie" ? "en" : "ja"}`);
                 const data = await request.data;
                 data.stars = movie.stars;
                 data.impression = movie.impression;
@@ -63,7 +63,7 @@ export const Row = ({title, isLargeRow, genre, media}: Props) => {
     }, [genre, media]);
 
 
-    const opts1: Options = {    
+    const opts1: Options = {
         height: "180",
         width: "320",
         playerVars: {
@@ -71,7 +71,7 @@ export const Row = ({title, isLargeRow, genre, media}: Props) => {
         },
     };
 
-    const opts2: Options = {    
+    const opts2: Options = {
         height: "360",
         width: "640",
         playerVars: {
@@ -93,54 +93,53 @@ export const Row = ({title, isLargeRow, genre, media}: Props) => {
                 setTrailerTitle(movie?.title || movie?.name);
                 setStars(movie.stars);
                 setImpression(movie.impression);
-            } 
+            }
         } else {
             setTrailerUrl("");
         }
-        
+
     };
 
     const closeModal = () => {
         setTrailerUrl("");
-      }
+    }
 
-    return(
+    return (
         <div>
             <div className="Row">
                 <h2>{title}</h2>
                 <div className="Row-posters">
-                {movies.map((movie, i) => (
-                    <img
-                    key={movie.id}
-                    className={`Row-poster ${isLargeRow && "Row-poster-large"}`}
-                    src={`${base_url}${
-                        isLargeRow ? movie.poster_path : movie.backdrop_path
-                    }`}
-                    alt={movie?.title || movie?.name}
-                    onClick={() => handleClick(movie)}
-                    />
-                ))}
-                </div>
-                </div>
-
-                <div className="Modal">         
-                    {trailerUrl &&
-                        <div id="overlay" onClick={closeModal}>
-                            <div className="flexbox">
-                                <h2>{trailerTitle}</h2>
-                                <p>おすすめ度：<span className="star5_rating" data-rate={stars}></span></p>
-                                <p className="impression">{impression}</p>
-                                <YouTube videoId={trailerUrl} opts={
-                                    (width <= 640)? opts1 : opts2
-                                    } />
-                                <div id="center">
-                                    <p>{overview}</p>
-                                </div>
-                                <button onClick={closeModal}>Close</button>
-                            </div>
-                        </div>
-                    }
+                    {movies.map((movie, i) => (
+                        <img
+                            key={movie.id}
+                            className={`Row-poster ${isLargeRow && "Row-poster-large"}`}
+                            src={`${base_url}${isLargeRow ? movie.poster_path : movie.backdrop_path
+                                }`}
+                            alt={movie?.title || movie?.name}
+                            onClick={() => handleClick(movie)}
+                        />
+                    ))}
                 </div>
             </div>
+
+            <div className="Modal">
+                {trailerUrl &&
+                    <div id="overlay" onClick={closeModal}>
+                        <div className="flexbox">
+                            <h2>{trailerTitle}</h2>
+                            <p>おすすめ度：<span className="star5_rating" data-rate={stars}></span></p>
+                            <p className="impression">{impression}</p>
+                            <YouTube videoId={trailerUrl} opts={
+                                (width <= 640) ? opts1 : opts2
+                            } />
+                            <div id="center">
+                                <p>{overview}</p>
+                            </div>
+                            <button onClick={closeModal}>Close</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
     );
 };

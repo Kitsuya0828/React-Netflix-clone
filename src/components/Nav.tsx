@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import "./Nav.scss";
+import logo from "../logo.png";
 
 type Props = {
   className?: string;
@@ -25,8 +26,8 @@ export const Nav = (props: Props) => {
     <div className={`Nav ${show && "Nav-black"}`}>
       <img
         className="Nav-logo"
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/1920px-Netflix_2015_logo.svg.png"
-        alt="Netflix Logo"
+        src={logo}
+        alt="Azumax Logo"
       />
       {/* <img
         className="Nav-avater"
