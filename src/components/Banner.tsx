@@ -10,6 +10,7 @@ type Movie = {
   id: string;
   name: string;
   title: string;
+  media: string;
   original_name: string;
   poster_path: string;
   backdrop_path: string;
@@ -40,7 +41,7 @@ export const Banner = () => {
   useEffect(() => {
     async function fetchData() {
       const movie = mylist.videos[0];
-      const request = await axios.get(`/movie/${movie.id}?api_key=${process.env.REACT_APP_API_KEY}`);
+      const request = await axios.get(`/${movie.media}/${movie.id}?api_key=${process.env.REACT_APP_API_KEY}`);
       const data = await request.data;
       data.stars = movie.stars;
       data.impression = movie.impression;

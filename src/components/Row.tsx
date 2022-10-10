@@ -17,6 +17,7 @@ type Props = {
 type Movie = {
     id: string;
     name: string;
+    media: string;
     title: string | null;
     original_name: string;
     poster_path: string;
@@ -34,7 +35,7 @@ type Options = {
     };
 };
 
-export const Row = ({ title, isLargeRow, genre, media }: Props) => {
+export const Row = ({ title, isLargeRow, genre}: Props) => {
     const [movies, setMovies] = useState<Movie[]>([]);
     const [trailerUrl, setTrailerUrl] = useState<string | null>("");
     const [trailerTitle, setTrailerTitle] = useState<string | null>("");
@@ -50,17 +51,18 @@ export const Row = ({ title, isLargeRow, genre, media }: Props) => {
 
             for (let movie of movies) {
                 if (genre !== movie.genre) { continue; }
-                const request = await axios.get(`/${media}/${movie.id}?api_key=${process.env.REACT_APP_API_KEY}&language=${media === "movie" ? "en" : "ja"}`);
+                const request = await axios.get(`/${movie.media}/${movie.id}?api_key=${process.env.REACT_APP_API_KEY}&language=${movie.genre === "marvel" ? "en" : "ja"}`);
                 const data = await request.data;
                 data.stars = movie.stars;
                 data.impression = movie.impression;
+                data.media = movie.media;
                 movieList.push(data);
             }
             setMovies(movieList);
             return movieList;
         }
         fetchData();
-    }, [genre, media]);
+    }, [genre]);
 
 
     const opts1: Options = {
@@ -81,10 +83,10 @@ export const Row = ({ title, isLargeRow, genre, media }: Props) => {
 
 
     const handleClick = async (movie: Movie) => {
-        let urlRequest = await axios.get(`/${media}/${movie.id}/videos?api_key=${process.env.REACT_APP_API_KEY}&language=ja`);
+        let urlRequest = await axios.get(`/${movie.media}/${movie.id}/videos?api_key=${process.env.REACT_APP_API_KEY}&language=ja`);
         const url = urlRequest.data.results[0]?.key;
 
-        let requestJapanese = await axios.get(`/${media}/${movie.id}?api_key=${process.env.REACT_APP_API_KEY}&language=ja`);
+        let requestJapanese = await axios.get(`/${movie.media}/${movie.id}?api_key=${process.env.REACT_APP_API_KEY}&language=ja`);
         setOverview(requestJapanese.data.overview);
 
         if (urlRequest) {
@@ -101,7 +103,7 @@ export const Row = ({ title, isLargeRow, genre, media }: Props) => {
     };
 
     const closeModal = () => {
-        setTrailerUrl("");
+        setOverview("");
     }
 
     return (
@@ -123,15 +125,16 @@ export const Row = ({ title, isLargeRow, genre, media }: Props) => {
             </div>
 
             <div className="Modal">
-                {trailerUrl &&
+                {overview &&
                     <div id="overlay" onClick={closeModal}>
                         <div className="flexbox">
                             <h2>{trailerTitle}</h2>
                             <p>おすすめ度：<span className="star5_rating" data-rate={stars}></span></p>
                             <p className="impression">{impression}</p>
-                            <YouTube videoId={trailerUrl} opts={
-                                (width <= 640) ? opts1 : opts2
-                            } />
+                            {trailerUrl &&
+                                <YouTube videoId={trailerUrl} opts={(width <= 640) ? opts1 : opts2} />
+                            }
+
                             <div id="center">
                                 <p>{overview}</p>
                             </div>
