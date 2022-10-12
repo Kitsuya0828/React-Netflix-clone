@@ -3,8 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
     "@fortawesome/fontawesome-free-solid": "^5.0.13",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@mantine/carousel": "^5.5.5",
+    "@mantine/core": "^5.5.5",
+    "@mantine/hooks": "^5.5.5",
+    "@mui/material": "^5.10.8",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
@@ -20,6 +26,7 @@
     "react-scripts": "5.0.1",
     "react-youtube": "^9.0.3",
     "sass": "^1.54.3",
+    "styled-components": "^5.3.6",
     "typescript": "^4.7.4",
     "web-vitals": "^2.1.4"
   },

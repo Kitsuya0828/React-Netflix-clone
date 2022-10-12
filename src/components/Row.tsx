@@ -4,6 +4,9 @@ import axios from "../axios";
 import "./Row.scss";
 import mylist from "../video.json"
 import { useWindowSize } from "./useWindowSize";
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Modal from "@mui/material/Modal";
 
 const base_url = "https://image.tmdb.org/t/p/original";
 
@@ -35,7 +38,11 @@ type Options = {
     };
 };
 
+
 export const Row = ({ title, isLargeRow, genre}: Props) => {
+    const [open, setOpen] = useState(false);
+    // const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
     const [movies, setMovies] = useState<Movie[]>([]);
     const [trailerUrl, setTrailerUrl] = useState<string | null>("");
     const [trailerTitle, setTrailerTitle] = useState<string | null>("");
@@ -81,6 +88,26 @@ export const Row = ({ title, isLargeRow, genre}: Props) => {
         },
     };
 
+    const style = () => {
+        const modalWidth = (width <= 640) ? 340 : 800
+        return {        position: 'absolute' as 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        // width: '80vw',
+        width: modalWidth,
+        color: 'white',
+        // bgcolor: 'rgba(0, 0, 0, 1)',
+        borderRadius: '10px 10px 10px 10px',
+    
+        // border: '2px solid #000',
+        boxShadow: 24,
+        // p: 4,
+        }
+
+    };
+    
+
 
     const handleClick = async (movie: Movie) => {
         let urlRequest = await axios.get(`/${movie.media}/${movie.id}/videos?api_key=${process.env.REACT_APP_API_KEY}&language=ja`);
@@ -99,12 +126,41 @@ export const Row = ({ title, isLargeRow, genre}: Props) => {
         } else {
             setTrailerUrl("");
         }
-
+        setOpen(true);
     };
 
     const closeModal = () => {
         setOverview("");
     }
+
+    const modalBody = (
+        <div>
+            {overview &&
+                <div id="overlay">
+                    <div className="flexbox">
+                        <Box textAlign="center" >
+                            <h1>{trailerTitle}</h1>
+                            <p className="star">おすすめ度：<span className="star5_rating" data-rate={stars}></span></p>
+                            <p className="impression">{impression}</p>
+                        </Box>
+
+                        
+
+                        {trailerUrl &&
+                            <YouTube videoId={trailerUrl} opts={(width <= 640) ? opts1 : opts2} />
+                            // <YouTube videoId={trailerUrl} opts={opts2} />
+                        }
+
+                        <div id="center">
+                            <p>{overview}</p>
+                        </div>
+                        {/* <button onClick={closeModal}>Close</button> */}
+                    </div>
+                </div>
+            }
+        </div>
+
+    )
 
     return (
         <div>
@@ -115,8 +171,7 @@ export const Row = ({ title, isLargeRow, genre}: Props) => {
                         <img
                             key={movie.id}
                             className={`Row-poster ${isLargeRow && "Row-poster-large"}`}
-                            src={`${base_url}${isLargeRow ? movie.poster_path : movie.backdrop_path
-                                }`}
+                            src={`${base_url}${isLargeRow ? movie.poster_path : movie.backdrop_path}`}
                             alt={movie?.title || movie?.name}
                             onClick={() => handleClick(movie)}
                         />
@@ -124,8 +179,10 @@ export const Row = ({ title, isLargeRow, genre}: Props) => {
                 </div>
             </div>
 
-            <div className="Modal">
-                {overview &&
+            {/* <div className="Modal"> */}
+            {/* <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description"> */}
+
+                {/* {overview &&
                     <div id="overlay" onClick={closeModal}>
                         <div className="flexbox">
                             <h2>{trailerTitle}</h2>
@@ -141,8 +198,26 @@ export const Row = ({ title, isLargeRow, genre}: Props) => {
                             <button onClick={closeModal}>Close</button>
                         </div>
                     </div>
-                }
-            </div>
+                } */}
+            {/* </div> */}
+            <Modal
+                open={open}
+                onClose={handleClose}
+                // aria-labelledby="modal-modal-title"
+                // aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    {modalBody}
+                    {/* <Typography id="modal-modal-title" variant="h6" component="h2">
+                        Text in a modal
+                    </Typography>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+                    </Typography> */}
+                </Box>
+                
+            </Modal>
+
         </div>
     );
 };

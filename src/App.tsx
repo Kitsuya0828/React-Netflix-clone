@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
-import { Row } from "./components/Row";
+// import { Row } from "./components/Row";
+import { Row } from "./components/CardsCarousel";
 import { Banner } from "./components/Banner";
 import { Nav } from "./components/Nav";
 
