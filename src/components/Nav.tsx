@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Nav.scss";
 import logo from "../logo.png";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 type Props = {
   className?: string;
@@ -34,6 +35,7 @@ export const Nav = (props: Props) => {
         src="https://i.pinimg.com/originals/0d/dc/ca/0ddccae723d85a703b798a5e682c23c1.png"
         alt="Avatar"
       /> */}
+      <AccountCircleIcon sx={{ color: "white" }} fontSize="large" className="Nav-avater"/>
     </div>
   );
 };

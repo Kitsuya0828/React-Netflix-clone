@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 // import { Row } from "./components/Row";
-import { Row } from "./components/CardsCarousel";
+import { CardsCarousel } from "./components/CardsCarousel";
 import { Banner } from "./components/Banner";
 import { Nav } from "./components/Nav";
 
@@ -10,10 +10,10 @@ function App() {
     <div className="App">
       <Nav />
       <Banner />
-      <Row title="MARVEL Cinematic Universe" isLargeRow genre="marvel" />
-      <Row title='Movies' genre="movies" />
-      <Row title="Anime (Summer 2022)" isLargeRow genre="anime" />
-      <Row title="Anime (All Time)" genre="anime_all" />
+      <CardsCarousel title="MARVEL Cinematic Universe" isLargeRow genre="marvel" />
+      <CardsCarousel title='Movies' genre="movies" />
+      <CardsCarousel title="Anime (Summer 2022)" isLargeRow genre="anime" />
+      <CardsCarousel title="Anime (All Time)" genre="anime_all" />
     </div>
   );
 }

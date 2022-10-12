@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "../axios";
-import YouTube from "react-youtube";
+import Rating from "@mui/material/Rating";
 import "./Banner.scss";
-import "./Row.scss";
+import "./CardsCarousel.scss";
 import mylist from "../video.json"
-import { useWindowSize } from "./useWindowSize";
+import { Modal, createStyles, Paper, Text, Image, Box, Title, Button, useMantineTheme } from '@mantine/core';
+
+const base_url = "https://image.tmdb.org/t/p/original";
 
 type Movie = {
   id: string;
@@ -19,24 +21,19 @@ type Movie = {
   impression: string | null;
 };
 
-// trailerのoption
-type Options = {
-  height: string;
-  width: string;
-  playerVars: {
-    autoplay: 0 | 1 | undefined;
-  };
-};
-
 
 export const Banner = () => {
   const [movie, setMovie] = useState<Movie>();
-  const [trailerUrl, setTrailerUrl] = useState<string | null>("");
-  const [trailerTitle, setTrailerTitle] = useState<string | null>("");
-  const [overview, setOverview] = useState<string | null>("");
-  const [stars, setStars] = useState<number | null>();
-  const [impression, setImpression] = useState<string | null>();
-  const [width, height] = useWindowSize();
+  const [opened, setOpened] = useState(false);
+  const [url, setUrl] = useState("");
+
+  const handleClick = async (movie_: Movie) => {
+      let urlRequest = await axios.get(`/${movie_.media}/${movie_.id}/videos?api_key=${process.env.REACT_APP_API_KEY}&language=ja`);
+      console.log(urlRequest.data);
+      setUrl(urlRequest.data.results[0]?.key);
+      console.log(url);
+      setOpened(true);
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -45,12 +42,12 @@ export const Banner = () => {
       const data = await request.data;
       data.stars = movie.stars;
       data.impression = movie.impression;
+      data.media = movie.media;
       setMovie(data);
       return request;
     }
     fetchData();
   }, []);
-  console.log(movie);
 
   function truncate(str: any, n: number) {
     if (str !== undefined) {
@@ -58,50 +55,13 @@ export const Banner = () => {
     }
   }
 
-  const handleClick = async (movie: Movie) => {
-    let urlRequest = await axios.get(`/movie/${movie.id}/videos?api_key=${process.env.REACT_APP_API_KEY}`);
-    const url = urlRequest.data.results[0]?.key;
-
-    if (urlRequest) {
-      if (trailerUrl !== url) {
-        setTrailerUrl(url);
-        setTrailerTitle(movie.title);
-        setStars(movie.stars);
-        setImpression(movie.impression);
-        setOverview(movie.overview);
-      }
-    } else {
-      setTrailerUrl("");
-    }
-
-  };
-  const closeModal = () => {
-    setTrailerUrl("");
-  }
-
-  const opts1: Options = {
-    height: "180",
-    width: "320",
-    playerVars: {
-      autoplay: 1,
-    },
-  };
-
-  const opts2: Options = {
-    height: "360",
-    width: "640",
-    playerVars: {
-      autoplay: 1,
-    },
-  };
-
   return (
     <div>
       <header
         className="Banner"
         style={{
           backgroundSize: "cover",
-          backgroundImage: `url("https://image.tmdb.org/t/p/original${movie?.backdrop_path}")`,
+          backgroundImage: `url("${base_url}${movie?.backdrop_path}")`,
           backgroundPosition: "center center",
         }}
       >
@@ -122,24 +82,32 @@ export const Banner = () => {
 
         <div className="Banner-fadeBottom" />
       </header>
-      <div className="Modal">
-        {trailerUrl &&
-          <div id="overlay" onClick={closeModal}>
-            <div className="flexbox">
-              <h2>{trailerTitle}</h2>
-              <p>おすすめ度：<span className="star5_rating" data-rate={stars}></span></p>
-              <p className="impression">{impression}</p>
-              <YouTube videoId={trailerUrl} opts={
-                (width <= 640) ? opts1 : opts2
-              } />
-              <div id="center">
-                <p>{movie ? movie.overview : null}</p>
-              </div>
-              <button onClick={closeModal}>Close</button>
-            </div>
-          </div>
-        }
-      </div>
+
+      {movie && 
+        <div>
+            <Modal
+                opened={opened}
+                onClose={() => setOpened(false)}
+            >
+                <Title order={3}>{movie.name || movie.title}</Title>
+                
+                <Box style={{display: "flex", paddingBottom: "10px"}}>
+                    <Text size="xs" color="gray">おすすめ度：</Text>
+                    {movie.stars &&
+                        <Rating name="half-rating-read" defaultValue={movie.stars} precision={0.5} size="small" readOnly />
+                    }
+                    <Text size="xs" color="gray">{movie.stars}</Text>
+                </Box>
+
+                <iframe src={`https://www.youtube.com/embed/${url}`} title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                
+                <Box style={{paddingTop: "10px"}}>
+                    <Text size="md">{movie.overview}</Text>
+                </Box>
+            </Modal>
+        </div>
+      }
+
     </div>
   );
 };
