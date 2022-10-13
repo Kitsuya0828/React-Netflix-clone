@@ -66,6 +66,7 @@ type Movie = {
 function Card(movie: Movie) {
     const [opened, setOpened] = useState(false);
     const [url, setUrl] = useState("");
+    const theme = useMantineTheme();
 
     const handleClick = async (movie: Movie) => {
         let urlRequest = await axios.get(`/${movie.media}/${movie.id}/videos?api_key=${process.env.REACT_APP_API_KEY}&language=ja`);
@@ -78,6 +79,7 @@ function Card(movie: Movie) {
             <Modal
                 opened={opened}
                 onClose={() => setOpened(false)}
+                centered={true}
             >
                 <Title order={3}>{movie.name || movie.title}</Title>
                 
@@ -88,8 +90,9 @@ function Card(movie: Movie) {
                     }
                     <Text size="xs" color="gray">{movie.stars}</Text>
                 </Box>
-
-                <iframe src={`https://www.youtube.com/embed/${url}`} title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                <div style={{width: "100%", aspectRatio: "16 / 9"}}>
+                    <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${url}`} title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                </div>
                 
                 <Box style={{paddingTop: "10px"}}>
                     <Text size="md">{movie.overview}</Text>
@@ -109,6 +112,7 @@ export const CardsCarousel = ({ title, isLargeRow, genre }: Props) => {
     const [movies, setMovies] = useState<Movie[]>([]);
     const theme = useMantineTheme();
     const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
+    const largeScreen = useMediaQuery(`(min-width: ${theme.breakpoints.lg}px)`);
 
     useEffect(() => {
         async function fetchData() {
@@ -140,7 +144,7 @@ export const CardsCarousel = ({ title, isLargeRow, genre }: Props) => {
                 <Title color="white" size="h2">{title}</Title>
                 <Carousel
                     height="auto"
-                    slideSize= {mobile ? "33.333%" : "20%"}
+                    slideSize= {mobile ? "33.333%" : (largeScreen ? "10%" : "20%")}
                     slideGap="xl"
                     dragFree
                     align="start"
