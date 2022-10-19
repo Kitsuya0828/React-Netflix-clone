@@ -12,8 +12,9 @@ function App() {
       <Banner />
       <CardsCarousel title="MARVEL Cinematic Universe" isLargeRow genre="marvel" />
       <CardsCarousel title='Movies' genre="movies" />
-      <CardsCarousel title="Anime (Summer 2022)" isLargeRow genre="anime" />
-      <CardsCarousel title="Anime (All Time)" genre="anime_all" />
+      <CardsCarousel title="Anime (Autumn 2022)" isLargeRow genre="anime_2022_autumn" />
+      <CardsCarousel title="Anime (Summer 2022)" isLargeRow genre="anime_2022_summer" />
+      {/* <CardsCarousel title="Anime (All Time)" genre="anime_all" /> */}
     </div>
   );
 }

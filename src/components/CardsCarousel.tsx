@@ -30,6 +30,7 @@ type Movie = {
     backdrop_path: string;
     stars: number | null;
     impression: string | null;
+    season: number | null;
 };
 
 
@@ -83,13 +84,14 @@ function Card(movie: Movie) {
             >
                 <Title order={3}>{movie.name || movie.title}</Title>
                 
-                <Box style={{display: "flex", paddingBottom: "10px"}}>
+                <Box style={{display: "flex", paddingBottom: "5px"}}>
                     <Text size="xs" color="gray">おすすめ度：</Text>
                     {movie.stars &&
                         <Rating name="half-rating-read" defaultValue={movie.stars} precision={0.5} size="small" readOnly />
                     }
                     <Text size="xs" color="gray">{movie.stars}</Text>
                 </Box>
+                <Text size="xs" color="blue" style={{paddingBottom: "10px"}}>{movie.impression}</Text>
                 <div style={{width: "100%", aspectRatio: "16 / 9"}}>
                     <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${url}`} title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
                 </div>
@@ -123,6 +125,12 @@ export const CardsCarousel = ({ title, isLargeRow, genre }: Props) => {
                 if (genre !== movie.genre) { continue; }
                 const request = await axios.get(`/${movie.media}/${movie.id}?api_key=${process.env.REACT_APP_API_KEY}&language=${movie.genre === "marvel" ? "en" : "ja"}`);
                 const data = await request.data;
+                if (movie.season !== '0') {
+                    const season_request = await axios.get(`/${movie.media}/${movie.id}/season/${movie.season}?api_key=${process.env.REACT_APP_API_KEY}&language=${movie.genre === "marvel" ? "en" : "ja"}`);
+                    const season_data = await season_request.data;
+                    data.poster_path = season_data.poster_path
+                    data.overview = season_data.overview
+                }
                 data.stars = movie.stars;
                 data.impression = movie.impression;
                 data.media = movie.media;
