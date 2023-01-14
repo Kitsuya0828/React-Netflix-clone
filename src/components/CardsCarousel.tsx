@@ -1,14 +1,10 @@
 import { useEffect, useState } from "react";
 import Rating from "@mui/material/Rating";
 import axios from "../axios";
-// import "./CardsCarousel.scss";
 import mylist from "../video.json"
-// import { useWindowSize } from "./useWindowSize";
-// import Box from '@mui/material/Box';
-// import Modal from "@mui/material/Modal";
 import { Carousel } from '@mantine/carousel';
 import { useMediaQuery } from '@mantine/hooks';
-import { Modal, createStyles, Paper, Text, Image, Box, Title, Button, useMantineTheme } from '@mantine/core';
+import { Modal, Text, Image, Box, Title, useMantineTheme } from '@mantine/core';
 
 const base_url = "https://image.tmdb.org/t/p/original";
 
@@ -34,40 +30,10 @@ type Movie = {
 };
 
 
-// const useStyles = createStyles((theme) => ({
-//     card: {
-//       height: '20vh',
-//       width: 'auto',
-//       display: 'flex',
-//       flexDirection: 'column',
-//       justifyContent: 'space-between',
-//       alignItems: 'flex-start',
-//       backgroundSize: 'cover',
-//       backgroundPosition: 'center',
-//     },
-  
-//     title: {
-//       fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-//       fontWeight: 900,
-//       color: theme.black,
-//       lineHeight: 1.2,
-//       fontSize: 32,
-//       marginTop: theme.spacing.xs,
-//     },
-  
-//     category: {
-//       color: theme.white,
-//       opacity: 0.7,
-//       fontWeight: 700,
-//       textTransform: 'uppercase',
-//     },
-// }));
-
-
 function Card(movie: Movie) {
     const [opened, setOpened] = useState(false);
     const [url, setUrl] = useState("");
-    const theme = useMantineTheme();
+    const [isHover, setIsHover] = useState(false);
 
     const handleClick = async (movie: Movie) => {
         let urlRequest = await axios.get(`/${movie.media}/${movie.id}/videos?api_key=${process.env.REACT_APP_API_KEY}&language=ja`);
@@ -104,6 +70,12 @@ function Card(movie: Movie) {
                 radius="lg"
                 src={`${base_url}${movie.poster_path}`}
                 onClick={() => handleClick(movie)}
+                style={{overflow: "hidden", transform: isHover ? "scale(1.2,1.2)" : "",
+                transition: "1s all"}}
+                onMouseEnter={() => setIsHover(true)}
+                onMouseLeave={() => setIsHover(false)}
+                onTouchStart={() => setIsHover(true)}
+                onTouchEnd={() => setIsHover(false)}
             />
         </div>
     );
